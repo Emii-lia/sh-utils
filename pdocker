@@ -1,0 +1,10 @@
+#!/bin/bash
+name="${@: -1}"
+cmd=("${@:1:$#-1}")
+ids=$(docker ps -a --format '{{.ID}} {{.Names}}' | grep "$name" | awk '{print $1}')
+
+if [[ -n "$ids" ]]; then
+	docker "${cmd[@]}" $ids
+else 
+	echo "No container found matching: $name"
+fi

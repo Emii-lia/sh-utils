@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+todays=~/.config/conky/Mirach/.todays
+record=~/.config/conky/Mirach/.fortune.record
+
+[ -f "$todays" ] && echo "" > "$todays"
+[ -f "$record" ] && echo "" > "$record"

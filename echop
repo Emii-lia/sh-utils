@@ -1,0 +1,49 @@
+#!/bin/bash
+
+position=""
+
+while getopts "p:h" opt;
+do
+  case $opt in
+    p) position="$OPTARG";;
+    h) echo "Usage $0 [-p POS_X,POS_Y] <TEXT> [-h]"; exit 0 ;;
+    \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+    :) echo "Option -$OPTARG requires an argument" >&2; exit 1 ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+text=$1
+
+is_number() {
+  [[ "$1" =~ ^[+-]?[0-9]+$ ]]
+}
+
+if [[ -z "$position" ]]; then
+  stty -echo < /dev/tty
+  printf "\e[6n" > /dev/tty
+  IFS=";" read -r -d R coord < /dev/tty
+  stty echo < /dev/tty
+  coord=${coord#*[}
+  pos_x=${coord#*;}
+  pos_y=${coord%;*};
+else 
+  pos_x=${position%%,*}
+  pos_y=${position#*,}
+fi
+
+if ! is_number "$pos_x" || ! is_number "$pos_y"; then
+  printf "Invalid position %s to %s,%s.\n Usage %s -p <X>,<Y> <TEXT>" "$position" "$pos_x" "$pos_y" "$0";
+
+  exit 1;
+fi
+
+echop() {
+  to_echo=${3:-"Hello World"}
+  printf "\e7"
+  printf "\e[%s;%sH" "$2" "$1"
+  echo "$to_echo"
+  printf "\e8"
+}
+
+echop "$pos_x" "$pos_y" "$text"
