@@ -1,11 +1,13 @@
 #!/bin/bash
 
 position=""
+color=""
 
-while getopts "p:h" opt;
+while getopts "p:c:h" opt;
 do
   case $opt in
     p) position="$OPTARG";;
+    c) color="$OPTARG";;
     h) echo "Usage $0 [-p POS_X,POS_Y] <TEXT> [-h]"; exit 0 ;;
     \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
     :) echo "Option -$OPTARG requires an argument" >&2; exit 1 ;;
@@ -38,12 +40,18 @@ if ! is_number "$pos_x" || ! is_number "$pos_y"; then
   exit 1;
 fi
 
+if ! is_number "$color"; then
+  printf "\e[30m Invalid color"
+  exit 1;
+fi
+
 echop() {
-  to_echo=${3:-"Hello World"}
+  to_echo=${4:-"Hello World"}
+  fg_color=${3:-"0"}
   printf "\e7"
   printf "\e[%s;%sH" "$2" "$1"
-  echo "$to_echo"
+  printf "\e[3%sm %s" "$fg_color" "$to_echo"
   printf "\e8"
 }
 
-echop "$pos_x" "$pos_y" "$text"
+echop "$pos_x" "$pos_y" "$color" "$text"
