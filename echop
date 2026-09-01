@@ -2,12 +2,14 @@
 
 position=""
 color=""
+bold=false
 
-while getopts "p:c:h" opt;
+while getopts "p:c:bh" opt;
 do
   case $opt in
     p) position="$OPTARG";;
     c) color="$OPTARG";;
+    b) bold=true;;
     h) echo "Usage $0 [-p POS_X,POS_Y] <TEXT> [-h]"; exit 0 ;;
     \?) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
     :) echo "Option -$OPTARG requires an argument" >&2; exit 1 ;;
@@ -35,13 +37,15 @@ else
 fi
 
 if ! is_number "$pos_x" || ! is_number "$pos_y"; then
-  printf "Invalid position %s to %s,%s.\n Usage %s -p <X>,<Y> <TEXT>" "$position" "$pos_x" "$pos_y" "$0";
+  printf "\e[31m Invalid position %s to %s,%s.\n Usage %s -p <X>,<Y> <TEXT>" "$position" "$pos_x" "$pos_y" "$0";
 
   exit 1;
 fi
 
+color=${color:-"8"}
+
 if ! is_number "$color"; then
-  printf "\e[30m Invalid color"
+  printf "\e[31m Invalid color"
   exit 1;
 fi
 
@@ -50,6 +54,8 @@ echop() {
   fg_color=${3:-"0"}
   printf "\e7"
   printf "\e[%s;%sH" "$2" "$1"
+
+  [[ "$bold" == true ]] && printf "\e[1m"
   printf "\e[3%sm %s" "$fg_color" "$to_echo"
   printf "\e8"
 }
