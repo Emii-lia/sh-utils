@@ -37,7 +37,7 @@ else
 fi
 
 if ! is_number "$pos_x" || ! is_number "$pos_y"; then
-  printf "Invalid position %s to %s,%s.\n Usage %s -p <X>,<Y> <TEXT>" "$position" "$pos_x" "$pos_y" "$0";
+  printf "\e[31m Invalid position %s to %s,%s.\n Usage %s -p <X>,<Y> <TEXT>" "$position" "$pos_x" "$pos_y" "$0";
 
   exit 1;
 fi
