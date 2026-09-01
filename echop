@@ -42,8 +42,10 @@ if ! is_number "$pos_x" || ! is_number "$pos_y"; then
   exit 1;
 fi
 
+color=${color:-"8"}
+
 if ! is_number "$color"; then
-  printf "\e[30m Invalid color"
+  printf "\e[31m Invalid color"
   exit 1;
 fi
 
